@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lpanel - 专业网站管理面板</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Lpanel</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="nav-item active" data-view="dashboard">仪表盘</li>
+                    <li class="nav-item" data-view="sites">网站管理</li>
+                    <li class="nav-item" data-view="files">文件管理</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- 仪表盘视图 -->
+            <section id="dashboardView" class="view">
+                <header><h2>系统监控</h2></header>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>CPU 使用率</h3>
+                        <div class="progress-bar"><div id="cpuBar" style="width: 0%"></div></div>
+                        <p id="cpuText">0%</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>内存使用率</h3>
+                        <div class="progress-bar"><div id="memBar" style="width: 0%"></div></div>
+                        <p id="memText">0% / 0GB</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>磁盘使用率</h3>
+                        <div class="progress-bar"><div id="diskBar" style="width: 0%"></div></div>
+                        <p id="diskText">0% / 0GB</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 网站管理视图 -->
+            <section id="sitesView" class="view" style="display: none;">
+                <header><h2>网站列表</h2></header>
+                <div class="action-bar">
+                    <button id="showAddSiteBtn">添加站点</button>
+                </div>
+                <div id="siteFormModal" class="modal">
+                    <div class="modal-content">
+                        <h3>添加新站点</h3>
+                        <form id="addSiteForm">
+                            <div class="form-group"><label>名称</label><input type="text" id="name" required></div>
+                            <div class="form-group"><label>域名</label><input type="text" id="domain" required></div>
+                            <div class="form-group"><label>端口</label><input type="number" id="port" value="80"></div>
+                            <div class="form-group">
+                                <label>根目录</label>
+                                <div class="input-group">
+                                    <input type="text" id="path" placeholder="C:\www\html">
+                                    <button type="button" id="selectPathBtn" class="btn-small">选择</button>
+                                </div>
+                            </div>
+                            <div class="form-group"><label>反代地址</label><input type="text" id="proxyPass"></div>
+                            <div class="form-actions">
+                                <button type="submit">创建</button>
+                                <button type="button" id="closeModalBtn" class="btn-secondary">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>名称</th><th>域名</th><th>端口</th><th>状态</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="siteTableBody"></tbody>
+                </table>
+            </section>
+
+            <!-- 文件管理视图 -->
+            <section id="filesView" class="view" style="display: none;">
+                <header><h2>文件管理器</h2></header>
+                <div class="path-bar">
+                    <span>当前路径: </span><span id="currentPath">E:\</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>名称</th><th>大小</th><th>修改时间</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="fileTableBody"></tbody>
+                </table>
+            </section>
+        </main>
+
+        <!-- 目录选择器模态框 -->
+        <div id="dirPickerModal" class="modal">
+            <div class="modal-content dir-picker-content">
+                <h3>选择目录</h3>
+                <div class="dir-picker-nav">
+                    <span id="pickerCurrentPath">E:\</span>
+                </div>
+                <div class="dir-picker-list">
+                    <ul id="pickerList"></ul>
+                </div>
+                <div class="modal-actions">
+                    <button id="confirmDirBtn">确定选择</button>
+                    <button id="closeDirPickerBtn" class="btn-secondary">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>
