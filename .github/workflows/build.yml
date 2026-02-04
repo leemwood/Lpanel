@@ -19,9 +19,13 @@ jobs:
             goos: windows
             goarch: amd64
             extension: .exe
-          - os: linux
+          - os: linux-amd64
             goos: linux
             goarch: amd64
+            extension: ""
+          - os: linux-arm64
+            goos: linux
+            goarch: arm64
             extension: ""
 
     steps:
@@ -40,22 +44,28 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 0
         run: |
-          mkdir -p build/Lpanel-${{ matrix.os }}-${{ matrix.goarch }}
-          go build -o build/Lpanel-${{ matrix.os }}-${{ matrix.goarch }}/Lpanel${{ matrix.extension }} backend/main.go
-          cp -r frontend build/Lpanel-${{ matrix.os }}-${{ matrix.goarch }}/
-          mkdir -p build/Lpanel-${{ matrix.os }}-${{ matrix.goarch }}/data
+          mkdir -p build/Lpanel-${{ matrix.os }}
+          go build -o build/Lpanel-${{ matrix.os }}/Lpanel${{ matrix.extension }} backend/main.go
+          cp -r frontend build/Lpanel-${{ matrix.os }}/
+          mkdir -p build/Lpanel-${{ matrix.os }}/data
 
-      - name: Archive artifacts
-        if: matrix.os == 'windows'
+      - name: Archive artifacts (Windows)
+        if: matrix.goos == 'windows'
         run: |
           cd build
-          zip -r ../Lpanel-windows-amd64.zip Lpanel-windows-amd64
+          zip -r ../Lpanel-windows-amd64.zip Lpanel-${{ matrix.os }}
 
-      - name: Archive artifacts (Linux)
-        if: matrix.os == 'linux'
+      - name: Archive artifacts (Linux AMD64)
+        if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
         run: |
           cd build
-          tar -czvf ../Lpanel-linux-amd64.tar.gz Lpanel-linux-amd64
+          tar -czvf ../Lpanel-linux-amd64.tar.gz Lpanel-${{ matrix.os }}
+
+      - name: Archive artifacts (Linux ARM64)
+        if: matrix.goos == 'linux' && matrix.goarch == 'arm64'
+        run: |
+          cd build
+          tar -czvf ../Lpanel-linux-arm64.tar.gz Lpanel-${{ matrix.os }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -64,6 +74,7 @@ jobs:
           path: |
             Lpanel-windows-amd64.zip
             Lpanel-linux-amd64.tar.gz
+            Lpanel-linux-arm64.tar.gz
 
   release:
     name: Create Release
@@ -84,5 +95,6 @@ jobs:
           files: |
             Lpanel-windows-amd64.zip
             Lpanel-linux-amd64.tar.gz
+            Lpanel-linux-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
